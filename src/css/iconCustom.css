@@ -4,21 +4,23 @@
     font-size: 24px;
 }
 
-.luckysheet-toolbar-menu-button .icon-xiayige,
-.luckysheet-toolbar-combo-button .icon-xiayige
+.luckysheet-toolbar-menu-button .luckysheet-iconfont-xiayige,
+.luckysheet-toolbar-combo-button .luckysheet-iconfont-xiayige
 {
     font-size: 12px;
     top: -8px;
     left: -3px;
 }
 
-.luckysheet-toolbar-select .icon-xiayige{
+.luckysheet-toolbar-select .luckysheet-iconfont-xiayige{
     margin-right: 4px;
 }
 
 #luckysheet-icon-morebtn{
     position: absolute;
-    right: 30px;
+    right: 15px;
+    transform: translate(0,-50%);
+    top: 50%;
 }
 
 

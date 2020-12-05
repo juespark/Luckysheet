@@ -15,7 +15,7 @@ import tooltip from '../global/tooltip';
 import {selectTextDom} from '../global/cursorPos';
 import locale from '../locale/locale';
 import Store from '../store';
-
+import luckysheetConfigsetting from './luckysheetConfigsetting';
 
 
 
@@ -109,6 +109,13 @@ function showsheetconfigmenu() {
     }
 
     $("#luckysheetsheetconfigcolorur").parent().find("span, div, button, input, a").addClass("luckysheet-mousedown-cancel");
+
+    // 如果全部按钮设置了隐藏，则不显示
+    const config = luckysheetConfigsetting.sheetRightClickConfig;
+    if(!config.delete && !config.copy && !config.rename && !config.color && !config.hide && !config.move){
+        return;
+    }
+
     setTimeout(function(){
         mouseclickposition($("#luckysheet-rightclick-sheet-menu"), luckysheetcurrentSheetitem.offset().left + luckysheetcurrentSheetitem.width(), luckysheetcurrentSheetitem.offset().top - 18, "leftbottom");
     },1);
@@ -192,6 +199,7 @@ export function initialSheetBar(){
             }, 200);
         }
     }).on("click", "div.luckysheet-sheets-item", function (e) {
+    
         if(isEditMode()){
             // alert("非编辑模式下不允许该操作！");
             return;
@@ -199,6 +207,7 @@ export function initialSheetBar(){
         
         let $t = $(this), $cur = $(e.target);
         luckysheetsheetrightclick($t, $cur, e);
+        server.keepHighLightBox()
     });
 
     let luckysheetsheetnameeditor = function ($t) {
@@ -222,7 +231,12 @@ export function initialSheetBar(){
         }
         let $t = $(this);
         let txt = $t.text(), oldtxt = $t.data("oldtxt");
-        
+        var reg1 = new RegExp("[\\[\\]:\\?*\/'\"]");
+        if(reg1.test(txt)){
+            alert(locale_sheetconfig.sheetNameSpecCharError);
+            return;
+        }
+
         let index = getSheetIndex(Store.currentSheetIndex);
         for (let i = 0; i < Store.luckysheetfile.length; i++) {
             if (index != i && Store.luckysheetfile[i].name == txt) {
@@ -429,6 +443,7 @@ export function initialSheetBar(){
                     sheetmanage.setSheetShow(index);
                     sheetmanage.locationSheet();
                 }
+                server.keepHighLightBox()
             });
 
             initialOpenSheet = false;
@@ -439,7 +454,9 @@ export function initialSheetBar(){
 
         let $t = $("#luckysheet-sheet-list");
 
-        mouseclickposition($t, $(this).offset().left, $(this).offset().top - 12, "leftbottom");
+        let left = $(this).offset().left - $('#' + Store.container).offset().left;
+        let bottom = $(this).height() + $('#luckysheet-sta-content').height() + 12;
+        $t.css({left: left + 'px', bottom: bottom + 'px'}).show();
         $("#luckysheet-input-box").removeAttr("style");
     });
 
